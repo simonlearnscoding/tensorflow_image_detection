@@ -18,10 +18,11 @@ def create_person(name):
 class Person:
     def __init__(self, name):
         self.kommt = 0
-        self.geht = 20
+        self.geht = 0
         self.ist_da = False
         self.name = name
-        self.kommt_grenze = 10 
+        self.kommt_grenze = 5 
+        self.geht_grenze = 5 
     
 
     def stop_action(self):
@@ -36,28 +37,37 @@ class Person:
 
 #Counter für kommen oder gehen    
     def check_if_there(self, gesehen):
+        # print(f"person name: {self.name}, gesehen name {gesehen}")
+        
         if self.name == gesehen:
-            gesehen = True
+            if self.ist_da: # GESEHEN UND DA
+                print(f"{self.name} geht: {self.geht}")
+                self.geht = 0 # resette geht timer
+            else: # GESEHEN UND NICHT DA
+                print(f"{self.name} kommt: {self.kommt}")
+                self.kommt += 1
+                # print(f"kommt = {self.kommt}")
+                if self.kommt >= self.kommt_grenze:
+                    self.start_action()
+                    self.kommt = 0
+                    self.ist_da = True
         else:
-            gesehen = False
-        self.kommt_grenze = 10
-        if self.ist_da:
-            self.geht -= 1
-            if gesehen:
-                self.geht = 20
-        else:
-            if gesehen:
-                self.kommt+=1
+            if self.ist_da: # NICHT GESEHEN UND DA
+                print(f"{self.name} geht: {self.geht}")
+                self.geht += 1
+                if self.geht > self.geht_grenze:
+                    self.stop_action()
+                    self.ist_da = False
+                    self.geht = 0
+                    
+            else: # NICHT GESEHEN UND NICHT DA
+                self.kommt = 0
+                print(f"{self.name} kommt: {self.kommt}")
+        
 
-        if self.kommt > self.kommt_grenze:
-            self.kommt = 0
-            self.start_action(name)
-            self.ist_da = True
+        # print(f"wurde {self.name} gesehen?? {gesehen}")
+           
 
-        if self.geht == 0:
-            self.geht = 20
-            self.stop_action(name)
-            self.ist_da = False
         
 
 # Load known face encodings
@@ -97,7 +107,6 @@ for frame in vision.get_frames():
             matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.4)
             if True in matches:
 
-
                 matched_index = matches.index(True)
                 matched_name = known_face_names[matched_index]
                 name = matched_name.split("_")[0]
@@ -110,11 +119,12 @@ for frame in vision.get_frames():
                 create_person(name)
                 wurde_gesehen_name = name
                 
-                for person in personen:
-                    person.check_if_there(self, wurde_gesehen_name)
 
                 cv2.putText(frame, name, (bounding_box[0], bounding_box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
-    check_if_there(name, wurde_gesehen)
-        # print(bounding_box)
+            else:
+                wurde_gesehen_name = None
+    
+        for person in personen:
+            person.check_if_there(wurde_gesehen_name)
     vision.draw_objects(frame, faces)
 
