@@ -8,7 +8,6 @@ import models
 personen = {}
 
 def create_person(name):
-    print(f'erkanntes gesicht {name}')
     if name in personen:
         return
     personen[name] = Person(name)
@@ -38,23 +37,18 @@ class Person:
 
 #Counter für kommen oder gehen    
     def check_if_there(self, personen_die_gesehen_wurden):
-        # print(f"person name: {self.name}, gesehen name {gesehen}")
         
         if self.name in personen_die_gesehen_wurden:
             if self.ist_da: # GESEHEN UND DA
-                # print(f"{self.name} wurde gesehen. geht: {self.geht} ")
                 self.geht = 0 # resette geht timer
             else: # GESEHEN UND NICHT DA
-                # print(f"{self.name} kommt: {self.kommt}")
                 self.kommt += 1
-                # print(f"kommt = {self.kommt}")
                 if self.kommt >= self.kommt_grenze:
                     self.start_action()
                     self.kommt = 0
                     self.ist_da = True
         else:
             if self.ist_da: # NICHT GESEHEN UND DA
-                # print(f"{self.name} wurde nicht gesehen geht: {self.geht}")
                 self.geht += 1
                 if self.geht > self.geht_grenze:
                     self.stop_action()
@@ -62,13 +56,9 @@ class Person:
                     self.geht = 0
             else: # NICHT GESEHEN UND NICHT DA
                 self.kommt = 0
-                # print(f"{self.name} kommt: {self.kommt}")
-        
 
-        # print(f"wurde {self.name} gesehen?? {gesehen}")
+
            
-
-        
 
 # Load known face encodings
 known_face_encodings = []
