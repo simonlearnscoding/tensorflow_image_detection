@@ -27,3 +27,5 @@ json_data = json.dumps(nested_lists)
 
 with open("face_vectors.json", "w") as file:
     file.write(json_data)
+
+

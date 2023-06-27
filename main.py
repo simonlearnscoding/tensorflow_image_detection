@@ -87,7 +87,7 @@ detector = vision.Detector(models.FACE_DETECTION_MODEL)
 
 for frame in vision.get_frames():
     faces = detector.get_objects(frame, threshold=0.5)
-    # print(faces)
+    
     wurde_gesehen = False 
     for face in faces:
 
@@ -97,7 +97,7 @@ for frame in vision.get_frames():
         try:
             cropped_face = cv2.cvtColor(cropped_face, cv2.COLOR_BGR2RGB)
         except Exception as e:
-            # print(e)
+           
             pass
 
         #Get the face encodings for the current face
